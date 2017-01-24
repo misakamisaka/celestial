@@ -28,12 +28,24 @@ public:
     void getEntryFromIndex(int64_t index, uint32_t& number_of_entry, 
         std::vector<std::shared_ptr<Entry> >& entries_result);
     void truncateFromIndex(int64_t index);
+    uint32_t getFileSize() {
+        return position_vec_[position_vec_.size() - 1];
+    }
+    int64_t getStartIndex() {
+        return start_index_;
+    }
+    int64_t getLastIndex() {
+        return start_index_ + position_vec_.size() - 1;
+    }
+    void setDelete() {
+        need_delete_ = true;
+    }
 private:
     std::string filepath_;
     std::fstream fs_;
     int64_t start_index_;
-    uint32_t number_of_entry_;
     std::vector<uint32_t> position_vec_;
+    bool need_delete_;
 };
 }
 
