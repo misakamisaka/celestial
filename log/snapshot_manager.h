@@ -7,6 +7,8 @@ namespace celestial {
 class SnapshotManager {
 public:
     void add(std::shared_ptr<Snapshot> snapshot);
+private:
+    std::shared_ptr<StateMachine> state_machine_;
 };
 }
 

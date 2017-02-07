@@ -77,7 +77,8 @@ void RaftServiceHandler::installSnapshot(InstallSnapshotResponse& repsonse, cons
         raft_context_->leaderid = request.serverid();
         repsonse.term = request.term;
     }
-    if (request.offset == 0 ||
+
+    if (request.offset == 0 || !snapshot_ ||
             snapshot_->getLastIncludedIndex() != request.last_included_index ||
             snapshot_->getLastIncludedTerm() != request.last_included_term) {
         snapshot_ = make_shared<Snapshot>();

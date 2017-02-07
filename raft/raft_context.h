@@ -19,7 +19,7 @@ public:
     std::mutex context_mutex;
     std::condition_variable context_cond;
     std::shared_ptr<Log> log;
-    std::shared_ptr<Snapshot> snapshot;
+    std::shared_ptr<SnapshotManager> snapshot_manager;
     std::shared_ptr<Meatadata> metadata;
     int64_t commit_index;
 

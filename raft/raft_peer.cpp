@@ -104,7 +104,7 @@ void RaftPeer::installSnapshot() {
         request.serverid = raft_context_->serverid;
         request.term = raft_context_->current_term;
         if (!snapshot_) {
-            snapshot_ = raft_context_->snapshot;
+            snapshot_ = raft_context_->snapshot_manager->get_snapshot();
             snapshot_offset_ = 0;
         }
         request.last_included_index = snapshot_->getLastIncludedIndex();

@@ -6,6 +6,7 @@
 #include "raft_service_types.h"
 #include "log_file.h"
 #include "log_exception.h"
+#include "configure.h"
 
 using std::string;
 using std::map;
@@ -13,16 +14,12 @@ using std::vector;
 using std::shared_ptr;
 
 namespace celestial{
-void Log::init(Json::Value& config) {
-    try {
-        dir_ = config["dir"].asString();
-        log_prefix_ = config["log_prefix"].asString();
-        log_roll_size_ = config["log_roll_size"].asUInt();
-    } catch (std::exception &e) {
-        throw LogException(string("log init failed, error:") + e.what());
-    }
+Log::Log() {
+    log_dir_ = Configure::instance().get_log_dir();
+    log_prefix_ = Configure::instance().get_log_prefix();
+    log_roll_size_ = Configure::instance().get_log_roll_size();
     namespace bf = boost::filesystem;
-    bf::path filepath(dir_);
+    bf::path filepath(log_dir_);
     bf::directory_iterator end_it;
     for (bf::directory_iterator file_it(filepath); file_it != end_it; ++file_it) {
         string fname = file_it->path().filename().string();
@@ -37,7 +34,7 @@ void Log::init(Json::Value& config) {
         }
     }
     if (index_file_map_.empty()) {
-        string filename = dir_ + "/" + log_prefix_ + "1";
+        string filename = log_dir_ + "/" + log_prefix_ + "1";
         index_file_map_.insert(std::make_pair(1, std::make_shared<LogFile>(filename)));
     }
     last_file_ = index_file_map_.rbegin()->second;
@@ -117,7 +114,7 @@ int64_t Log::getLastIndex(){
 
 void Log::roll() {
     int64_t next_index = index_file_map_.rbegin()->second->getLastIndex() + 1;
-    string filename = dir_ + "/" + log_prefix_ + std::to_string(next_index);
+    string filename = log_dir_ + "/" + log_prefix_ + std::to_string(next_index);
     index_file_map_.insert(std::make_pair(next_index, std::make_shared<LogFile>(filename)));
     last_file_ = index_file_map_.rbegin()->second;
 }

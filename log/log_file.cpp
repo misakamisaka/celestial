@@ -94,8 +94,10 @@ void LogFile::truncateFromIndex(int64_t index) {
     if (fs_.is_open()) {
         fs_.close();
     }
-    if (truncate(filepath_.c_str(), position_vec_[index - start_index_]) != 0) {
-        throw LogException("truncate fail, error:" + errno);
+    try {
+        boost::filesystem::resize_file(filepath_, position_vec_[index - start_index_]);
+    } catch (std::exception &e) {
+        throw LogException(string("truncate fail, error:") + e.what());
     }
     fs_.open(filepath_, std::fstream::in | std::fstream::out | std::fstream::binary | std::fstream::app);
     fs_.seekg(0, std::ios::end);

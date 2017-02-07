@@ -14,8 +14,7 @@ class LogFile;
 
 class Log {
 public:
-    // init log
-    void init(Json::Value& config);
+    Log();
     // append entries to log
     void append(const std::vector<std::shared_ptr<Entry> >& entries);
     // truncate log between [0, index)
@@ -33,7 +32,7 @@ public:
     void roll();
 private:
     std::mutex mutex_;
-    std::string dir_;
+    std::string log_dir_;
     std::string log_prefix_;
     std::map<int64_t, std::shared_ptr<LogFile> > index_file_map_;
     std::shared_ptr<LogFile> last_file_;
