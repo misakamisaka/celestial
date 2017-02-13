@@ -5,11 +5,12 @@
 using std::chrono::system_clock;
 using std::chrono::time_point;
 using std::chrono::duration;
-using apchache::thrift::TException;
+using apache::thrift::TException;
 
 namespace celestial {
 
 void RaftPeer::run() {
+	/*
     while(true) {
         std::unique_lock<std::mutex> lock(peer_mutex_);
         time_point<system_clock> start_time = system_clock::now();
@@ -26,8 +27,9 @@ void RaftPeer::run() {
         }
         peer_cond_.wait_until(lock, start_time + wait_time);
     }
+	*/
 }
-
+/*
 void notify() {
     std::unique_lock<std::mutex> lock(peer_mutex_);
     peer_cond_.notify_all();
@@ -141,14 +143,13 @@ void RaftPeer::installSnapshot() {
 
 void RaftPeer::requestVote() {
     RequestVoteRequest request;
-
-    {
-        std::unique_lock<std::mutex> lock(raft_context_->context_mutex);
-        request.serverid = raft_context_->serverid;
-        request.term = raft_context_->current_term;
-        request.last_log_index = raft_context_->log->getLastIndex();
-        request.last_log_term = raft_context_->log->getEntryFromIndex(request.last_log_index)->term;
-
+	RaftContext *raft = RaftContext::GetInstance();
+	{
+		std::unique_lock<std::mutex> lock(raft->context_mutex);
+		request.serverid = raft->server_id;
+		request.term = raft->metadata->current_term;
+		//request.last_log_index = raft->log->getLastIndex();
+        //request.last_log_term = raft_context_->log->getEntryFromIndex(request.last_log_index)->term;
     }
 
     RequestVoteResponse response;
@@ -165,15 +166,17 @@ void RaftPeer::requestVote() {
             return;
         }
         if (raft_context_->current_term < response.term) {
-            raft_manager_->stepDown(response.term);
+			RaftManager::GetInstance()->stepDown(response.term);
         } else {
             if (response.granted) {
                 have_vote_ = true;
-                raft_manager_->checkVote();
+				RaftManager::GetInstance()->checkVote();
             } else {
+				//deny 
                 LOG(INFO) << "didn't get vote from[" << server_id_ << "]";
             }
         }
     }
 }
+*/
 }

@@ -4,13 +4,15 @@
 #include "RaftService.h"
 #include <thread>
 #include <memory>
+
 #include "raft_context.h"
+#include "raft_manager.h"
 
 namespace celestial {
 
-class RaftServiceHandler : virtual public RaftServiceIf {
+class RaftService : virtual public RaftServiceIf {
 public:
-    RaftServiceHandler();
+    RaftService();
     void init();
 
     void appendEntries(AppendEntriesResponse& repsonse, const AppendEntriesRequest& request);
@@ -22,7 +24,7 @@ public:
 private:
     std::shared_ptr<RaftContext> raft_context_;
     std::shared_ptr<RaftManager> raft_manager_;
-    std::shared_ptr<Snapshot> snapshot_;
+    //std::shared_ptr<Snapshot> snapshot_;
 };
 }
 

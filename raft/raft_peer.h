@@ -4,13 +4,17 @@
 #include "runnable.h"
 
 namespace celestial {
-class RaftPeer : public runnable {
+	class RaftPeer : public Runnable {
 public:    
-    void run();
+	RaftPeer(){
+		have_vote_ = false;
+	}
+	void run();
+	bool have_vote_;
+/*
     int64_t get_match_index() {
         return match_index_;
     }
-    bool have_vote();
 
     void appendEntries();
     void installSnapshot();
@@ -29,13 +33,13 @@ private:
     int64_t next_index_;
     int64_t match_index_;
 
-    bool have_vote_;
 
     int64_t server_id_;
     int64_t snapshot_offset_;
 
     const int64_t MAX_APPEND_ENTRY_NUM;
     const int64_t HEARTBEAT_INTERVAL;
+	*/
 };
 }
 
