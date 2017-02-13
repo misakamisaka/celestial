@@ -2,7 +2,21 @@
 
 namespace celestial {
 
-void RaftServiceHandler::appendEntries(AppendEntriesResponse& repsonse, const AppendEntriesRequest& request) {
+
+
+void RaftService::init(){
+	raft_context_ = make_shared<RaftContext>(new RaftContext());
+	raft_manager_ = make_shared<RaftManager>(new RaftManager());
+	raft_manager_->setRaftContext(raft_context_);
+	raft_manager_->setRaftService(make_shared<RaftService>(this));
+}
+
+void RaftService::appendEntries(AppendEntriesResponse& repsonse, const AppendEntriesRequest& request) {
+/*
+	appendEntries_callback(response,request);
+}
+void appendEntries_callback(response,request){
+*/
     std::lock_gurad<std::mutex> lock(raft_context_->context_mutex);
     repsonse.term = raft_context_->current_term;
     repsonse.success = false;
@@ -56,9 +70,9 @@ void RaftServiceHandler::appendEntries(AppendEntriesResponse& repsonse, const Ap
     raft_context_->commit_index = std::min<int64_t>(request.commit_index,
             raft_context_->log->getLastIndex());
     raft_manager_->resetElectionTimeout();
-
 }
-void RaftServiceHandler::installSnapshot(InstallSnapshotResponse& repsonse, const InstallSnapshotRequest& request) {
+void RaftService::installSnapshot(InstallSnapshotResponse& repsonse, const InstallSnapshotRequest& request) {
+	/*
     std::lock_gurad<std::mutex> lock(raft_context_->context_mutex);
     repsonse.term = raft_context_->current_term;
 
@@ -97,10 +111,10 @@ void RaftServiceHandler::installSnapshot(InstallSnapshotResponse& repsonse, cons
         SnapshotManager::instance()->add(snapshot_offset_);
         //TODO:state machine load snapshot here
     }
-    
-    
+    */
 }
-void RaftServiceHandler::requestVote(RequestVoteReponse& repsonse, const RequestVoteRequest& request) {
+void RaftService::requestVote(RequestVoteReponse& repsonse, const RequestVoteRequest& request) {
+	/*
     std::lock_guard<std::mutex> lock(raft_context_->context_mutex);
     repsonse.term = raft_context_->current_term;
     repsonse.granted = false;
@@ -128,5 +142,6 @@ void RaftServiceHandler::requestVote(RequestVoteReponse& repsonse, const Request
     }
     repsonse.term = raft_context_->current_term;
     raft_manager_->resetElectionTimeout();
+	*/
 }
 }

@@ -1,19 +1,22 @@
-#include "election_timeout_checker.h"
-
+#include "raft_manager.h"
 namespace celestial {
+/*
 ElectionTimeoutChecker::RaftElectionTimeoutChecker()
     : ELECTION_TIMEOUT(Configure["election_timeout"].asint64()),
-    generator_(std::chrono::steady_clock::now()),
-    distribution_(ELECTION_TIMEOUT, ELECTION_TIMEOUT*2),
-    exiting_(false) {
+*/
+ElectionTimeoutChecker::ElectionTimeoutChecker():ELECTION_TIMEOUT(1000000000),exiting_(false),generator_(time(0)),distribution_(ELECTION_TIMEOUT,ELECTION_TIMEOUT*2){
+	//generator_ = std::chrono::steady_clock::now();
 }
 
 void ElectionTimeoutChecker::run() {
+	std::cout<<"run"<<std::endl;
     using namespace std::chrono;
     std::unique_lock<std::mutex> lock(mutex_);
     while(!exiting_) {
         if (steady_clock::now() >= election_start_time_point_) {
-            raft_manager_->startNewElection();
+			std::cout<<"New Election"<<std::endl;
+			RaftManager::GetInstance()->startNewElection();
+			return ;
         }
         time_changed_.wait_until(lock, election_start_time_point_);
     }
