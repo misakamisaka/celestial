@@ -1,12 +1,12 @@
-#include "meta_data.h"
-#include <ftream>
+#include "metadata.h"
+#include <fstream>
 
 namespace celestial {
-void Metadata::init() {
+void MetaData::init() {
 }
-void Metadata::save() {
+void MetaData::save() {
     
 }
-void Metadata::load() {
+void MetaData::load() {
 }
 }
