@@ -4,8 +4,12 @@
 #include <string>
 
 namespace celestial {
-class Metadata {
+class MetaData {
 public:
+	MetaData(){
+		current_term = 0;
+		voted_for = 0;
+	}
     void init();
     void save();
     void load();
