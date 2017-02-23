@@ -34,32 +34,34 @@ void notify() {
     std::unique_lock<std::mutex> lock(peer_mutex_);
     peer_cond_.notify_all();
 }
+*/
 
 void RaftPeer::appendEntries() {
-    int64_t prev_log_index = next_index_ - 1;
-
-    if (prev_log_index < raft_context_->log->getStartIndex()) {
+	/*
+    int64_t prev_log_index = next_index_ - 1;//use undefine???
+	
+	RaftContext* raft = RaftContext::GetInstance();
+    if (prev_log_index < raft->log->getStartIndex()) {
         installSnapshot();
         return;
     }
+    int64_t end_index = std::min<int64_t>(raft->log->getLastIndex(), prev_log_index + MAX_APPEND_ENTRY_NUM);
 
     AppendEntriesRequest request;
 
     {
-        std::unique_lock<std::mutex> lock(raft_context_->context_mutex);
-        request.serverid = raft_context_->serverid;
-        request.term = raft_context_->current_term;
+        std::unique_lock<std::mutex> lock(raft->context_mutex);
+        request.serverid = raft->server_id;
+        request.term = raft->current_term;
         request.prev_log_index = prev_log_index;
-        shared_ptr<Entry> prev_entry = raft_context_->log->getEntryFromIndex(prev_log_index);
+        shared_ptr<Entry> prev_entry = raft->log->getEntryFromIndex(prev_log_index);
         request.prev_log_term = prev_entry->term;
 
-        int64_t end_index = std::min<int64_t>(raft_context_->log->getLastIndex(),
-                prev_log_index + MAX_APPEND_ENTRY_NUM);
         for (int64_t i = next_index_; i <= end_index; ++i) {
-            shared_ptr<Entry> entry = raft_context_->log->getEntryFromIndex(i);
+            shared_ptr<Entry> entry = raft->log->getEntryFromIndex(i);
             request.entries.push_back(std::move(*entry));
         }
-        request.commit_index = raft_context_->commit_index;
+        request.commit_index = raft->commit_index;
     }
 
     AppendEntriesResponse resonpse;
@@ -70,34 +72,38 @@ void RaftPeer::appendEntries() {
         LOG(ERROR) << "error occurred when append entries, error:[" << e.what() << "]";
     }
 
-    {
-        std::unique_lock<std::mutex> lock(raft_context_->context_mutex);
-        if (raft_context_->current_term != request.term) {
-            return;
-        }
-        if (raft_context_->current_term < response.term) {
-            raft_manager_->stepDown(response.term);
-        } else {
-            if (reponse.success) {
-                if (match_index_ < end_index) {
-                    match_index_ = end_index
-                } else {
-                    LOG(WARNING) << "match index bigger than end_index";
-                }
-                raft_manager_->advanceCommitIndex();
-            } else {
-                if (next_index_ > 1) {
-                    --next_index_;
-                }
-                if (response.__isset.last_log_index &&
-                        next_index_ > response.last_log_index + 1) {
-                    next_index_ = response.last_log_index + 1;
-                }
-            }
-        }
-    }
+
+	{
+		std::unique_lock<std::mutex> lock(raft->context_mutex);
+		if(raft->metadata->current_term != request.term){
+			//TODO why cuurent_term != request.term
+			return ;
+		}
+		if(raft->metadata->current_term < response.term){
+			RaftManager::GetInstance()->stepDown(response.term);
+			LOG(INFO)<<"leader's term is stale,step down to follower";
+		}else{
+			if(response.success){
+				if(match_index_ < end_index){
+					match_index_ = end_index;
+				}else{
+					LOG(WARNING)<<"match index bigger than end_index";
+				}
+				RaftManager::GetInstance()->advanceCommitIndex();
+			}else {
+				if(next_index_ > 1){
+					--next_index_;
+				}
+				if(response.__isset.last_log_index && next_index_ > response.last_log_index + 1){
+					next_index_ = response.last_log_index + 1;
+				}
+			}
+		}
+	}
+	*/
 }
 
+/*
 void RaftPeer::installSnapshot() {
     InstallSnapshotRequest request;
 

@@ -6,7 +6,9 @@
 #include <map>
 #include <utility>
 #include "metadata.h"
-//#include "log.h"
+#include <glog/logging.h>
+#include "log.h"
+#include "log_exception.h"
 //#include "snapshot.h"
 
 namespace celestial {
@@ -24,8 +26,10 @@ public:
 	}
 private:
 	RaftContext(){
+		//Configure* conf = Configure::instance();
 		state = FOLLOWER;
 		metadata=std::make_shared<MetaData>();
+		log = std::make_shared<Log>();
 		leader_id = 0;
 		server_id = 0;
 	};
@@ -35,7 +39,7 @@ private:
 public:
     std::mutex context_mutex;
     //std::condition_variable context_cond;
-    //std::shared_ptr<Log> log;
+    std::shared_ptr<Log> log;
     //std::shared_ptr<SnapshotManager> snapshot_manager;
     std::shared_ptr<MetaData> metadata;
     int64_t commit_index;

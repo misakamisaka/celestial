@@ -49,7 +49,7 @@ struct RequestVoteRequest {
     4: i64 last_log_term
 }
 
-struct RequestVoteReponse {
+struct RequestVoteResponse {
     1: i64 term,
     2: bool granted
 }
@@ -60,5 +60,5 @@ service RaftService {
 
     InstallSnapshotResponse installSnapshot(1: InstallSnapshotRequest request),
 
-    RequestVoteReponse requestVote(1: RequestVoteRequest request)
+    RequestVoteResponse requestVote(1: RequestVoteRequest request)
 }

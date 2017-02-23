@@ -9,6 +9,6 @@ link_directories(${PROJECT_SOURCE_DIR}/lib/ ${WORKSPACE}/third/jsoncpp/lib)
 
 add_subdirectory(log)
 add_subdirectory(src)
-#add_subdirectory(raft)
+add_subdirectory(raft)
 add_subdirectory(thrift)
 add_subdirectory(test)

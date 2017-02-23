@@ -15,9 +15,9 @@ using std::shared_ptr;
 
 namespace celestial{
 Log::Log() {
-    log_dir_ = Configure::instance().get_log_dir();
-    log_prefix_ = Configure::instance().get_log_prefix();
-    log_roll_size_ = Configure::instance().get_log_roll_size();
+    log_dir_ = Configure::instance()->get_log_dir();
+    log_prefix_ = Configure::instance()->get_log_prefix();
+    log_roll_size_ = Configure::instance()->get_log_roll_size();
     namespace bf = boost::filesystem;
     bf::path filepath(log_dir_);
     bf::directory_iterator end_it;
@@ -27,6 +27,7 @@ Log::Log() {
             size_t last_point_pos = fname.find_last_of('.');
             try {
                 int start_index = boost::lexical_cast<int64_t>(fname.substr(last_point_pos + 1));
+				
                 index_file_map_.insert(std::make_pair(start_index, std::make_shared<LogFile>(fname)));
             } catch (boost::bad_lexical_cast &e) {
                 LOG(INFO) << "filename[" + fname + "] has no index";
@@ -102,6 +103,15 @@ void Log::getEntryFromIndex(int64_t index, uint32_t& number_of_entry,
     --seg_it;
     //read from segment
     seg_it->second->getEntryFromIndex(index, number_of_entry, entries_result);
+}
+std::shared_ptr<Entry> Log::getEntryFromIndex(int64_t index){
+	std::lock_guard<std::mutex> lock(mutex_);
+	auto seg_it = index_file_map_.upper_bound(index);
+	--seg_it;
+	uint32_t x = 1;
+	std::vector<std::shared_ptr<Entry> > entries;
+	seg_it->second->getEntryFromIndex(index,x,entries);
+	return entries[0];
 }
 
 int64_t Log::getStartIndex() {

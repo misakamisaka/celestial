@@ -2,6 +2,7 @@
 #define _CELESTIAL_RAFT_PEER_H_
 
 #include "runnable.h"
+#include "raft_context.h"
 
 namespace celestial {
 	class RaftPeer : public Runnable {
@@ -11,12 +12,12 @@ public:
 	}
 	void run();
 	bool have_vote_;
+    void appendEntries();
 /*
     int64_t get_match_index() {
         return match_index_;
     }
 
-    void appendEntries();
     void installSnapshot();
     void requestVote();
 

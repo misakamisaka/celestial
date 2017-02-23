@@ -56,8 +56,9 @@ void LogFile::append(const std::vector<std::shared_ptr<Entry> >& entries) {
 }
 void LogFile::getEntryFromIndex(int64_t index, uint32_t& number_of_entry, 
         std::vector<std::shared_ptr<Entry> >& entries_result) {
+	
     if (index >= start_index_ + position_vec_.size() - 1 || index < start_index_) {
-        throw LogException("cannot find index[" + std::to_string(index) + "]");
+        throw LogException("cannot find index[" + std::to_string(index) + "]"+ ",start_index["+std::to_string(start_index_)+"]" + ",position_vec.size["+std::to_string(position_vec_.size())+"]");
     }
     fs_.seekg(position_vec_[index - start_index_], std::ios::beg);
     uint32_t i = 0;
