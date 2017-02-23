@@ -24,7 +24,7 @@ public:
 
     void getEntryFromIndex(int64_t index, uint32_t& number_of_entry, 
         std::vector<std::shared_ptr<Entry> >& entries_result);
-
+	std::shared_ptr<Entry> getEntryFromIndex(int64_t index);
     int64_t getStartIndex();
 
     int64_t getLastIndex();

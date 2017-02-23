@@ -35,7 +35,7 @@ public:
         return start_index_;
     }
     int64_t getLastIndex() {
-        return start_index_ + position_vec_.size() - 1;
+        return start_index_ + position_vec_.size() - 2;
     }
     void setDelete() {
         need_delete_ = true;

@@ -10,6 +10,8 @@
 
 namespace celestial {
 
+void requestVote_callback(RequestVoteResponse& response,const RequestVoteRequest& request);
+
 class RaftService : virtual public RaftServiceIf {
 public:
     RaftService();
@@ -17,7 +19,7 @@ public:
 
     void appendEntries(AppendEntriesResponse& repsonse, const AppendEntriesRequest& request);
     void installSnapshot(InstallSnapshotResponse& repsonse, const InstallSnapshotRequest& request);
-    void requestVote(RequestVoteReponse& repsonse, const RequestVoteRequest& request);
+    void requestVote(RequestVoteResponse& repsonse, const RequestVoteRequest& request);
 
     //periodically check if quorum is met, advance commit index. only leader.
     //void checkQuorum();

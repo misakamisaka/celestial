@@ -8,3 +8,6 @@ TARGET_LINK_LIBRARIES(log_test gtest celetial_log celetial_service)
 
 ADD_EXECUTABLE(test_raft_context test_raft_context.cpp)
 TARGET_LINK_LIBRARIES(test_raft_context gtest celetial_log celetial_service raft)
+
+ADD_EXECUTABLE(test_raft_service test_raft_service.cpp)
+TARGET_LINK_LIBRARIES(test_raft_service gtest celetial_log celetial_service raft)

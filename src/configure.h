@@ -6,9 +6,9 @@
 namespace celestial {
 class Configure {
 public:
-    static Configure& instance() {
+    static Configure* instance() {
         static Configure configure;
-        return configure;
+        return &configure;
     }
     void init(std::string conf_str);
     std::string get_log_dir() {
